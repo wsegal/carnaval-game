@@ -346,12 +346,31 @@ const UI = {
 // ============================================
 
 window.addEventListener('DOMContentLoaded', () => {
-    // Esconder loading após 2 segundos
-    setTimeout(() => {
-        document.getElementById('loading-screen').classList.remove('active');
-        document.getElementById('home-screen').classList.add('active');
-        UI.currentScreen = 'home';
-    }, 2000);
+    console.log('🎭 Carnaval Game carregando...');
+    
+    // Inicializar jogo
+    try {
+        Game.init();
+        console.log('✅ Game inicializado!');
+        
+        // Esconder loading após 1 segundo
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.remove('active');
+            document.getElementById('home-screen').classList.add('active');
+            UI.currentScreen = 'home';
+            console.log('✅ UI pronta!');
+        }, 1000);
+    } catch (error) {
+        console.error('❌ Erro ao inicializar:', error);
+        document.getElementById('loading-screen').innerHTML = `
+            <div style="color:white;padding:40px;text-align:center;">
+                <h1>❌ Erro ao Carregar</h1>
+                <p>${error.message}</p>
+                <pre style="background:rgba(0,0,0,0.3);padding:20px;border-radius:10px;text-align:left;max-width:600px;margin:20px auto;overflow:auto;">${error.stack}</pre>
+                <button onclick="location.reload()" style="padding:15px 30px;background:#FF6B6B;border:none;color:white;border-radius:10px;font-size:1.1rem;cursor:pointer;">🔄 Recarregar</button>
+            </div>
+        `;
+    }
     
     // Fechar modais clicando fora
     document.querySelectorAll('.modal').forEach(modal => {

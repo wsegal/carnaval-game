@@ -462,7 +462,4 @@ const Game = {
     }
 };
 
-// Inicializar quando carregar
-window.addEventListener('DOMContentLoaded', () => {
-    Game.init();
-});
+// Não inicializar automaticamente aqui - será chamado pelo UI
