@@ -6,45 +6,51 @@
 // ============================================
 
 const PERSONAGENS = [
-    // RITMISTAS (8)
-    { id: 1, nome: "Mestre Batida", tipo: "ritmista", raridade: "lendario", emoji: "🥁", poder: 100, desc: "Lendário mestre da bateria" },
-    { id: 2, nome: "Surdo de Ouro", tipo: "ritmista", raridade: "epico", emoji: "🥁", poder: 80, desc: "Surdo poderoso" },
-    { id: 3, nome: "Repique Real", tipo: "ritmista", raridade: "epico", emoji: "🥁", poder: 75, desc: "Repique afiado" },
-    { id: 4, nome: "Tamborim Mágico", tipo: "ritmista", raridade: "raro", emoji: "🥁", poder: 60, desc: "Tamborim veloz" },
-    { id: 5, nome: "Agogô Sagrado", tipo: "ritmista", raridade: "raro", emoji: "🔔", poder: 55, desc: "Marca o tempo perfeito" },
-    { id: 6, nome: "Ritmista Junior", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 30, desc: "Aprendiz dedicado" },
-    { id: 7, nome: "Cuíca Cantante", tipo: "ritmista", raridade: "comum", emoji: "🎺", poder: 25, desc: "Som característico" },
-    { id: 8, nome: "Pandeiro Básico", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 20, desc: "Ritmo constante" },
+    // RITMISTAS (Baterias Lendárias do Rio) (8)
+    { id: 1, nome: "Mestre Odilon", tipo: "ritmista", raridade: "lendario", emoji: "🥁", poder: 100, desc: "Lenda da Portela, revolucionou as baterias", escola: "Portela" },
+    { id: 2, nome: "Mestre Louro", tipo: "ritmista", raridade: "lendario", emoji: "🥁", poder: 98, desc: "Ícone da Imperatriz Leopoldinense", escola: "Imperatriz" },
+    { id: 3, nome: "Mestre Ciça", tipo: "ritmista", raridade: "epico", emoji: "🥁", poder: 80, desc: "Lendário da Grande Rio", escola: "Grande Rio" },
+    { id: 4, nome: "Primeira Surdo Mangueira", tipo: "ritmista", raridade: "epico", emoji: "🥁", poder: 75, desc: "A mais tradicional bateria verde e rosa", escola: "Mangueira" },
+    { id: 5, nome: "Ritmista da Mocidade", tipo: "ritmista", raridade: "raro", emoji: "🥁", poder: 60, desc: "Bateria show da Padre Miguel", escola: "Mocidade" },
+    { id: 6, nome: "Tamborim da Beija-Flor", tipo: "ritmista", raridade: "raro", emoji: "🥁", poder: 55, desc: "Precisão e garra de Nilópolis", escola: "Beija-Flor" },
+    { id: 7, nome: "Ritmista da Vila", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 30, desc: "Aprendiz da Vila Isabel", escola: "Vila Isabel" },
+    { id: 8, nome: "Pandeirista Novato", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 20, desc: "Iniciante na Sapucaí", escola: null" },
     
-    // PASSISTAS (8)
-    { id: 9, nome: "Rainha da Passarela", tipo: "passista", raridade: "lendario", emoji: "💃", poder: 95, desc: "Dança hipnotizante" },
-    { id: 10, nome: "Bailarina de Elite", tipo: "passista", raridade: "epico", emoji: "💃", poder: 75, desc: "Movimentos perfeitos" },
-    { id: 11, nome: "Gingado Imperial", tipo: "passista", raridade: "epico", emoji: "💃", poder: 70, desc: "Ginga incomparável" },
-    { id: 12, nome: "Sambafoot Pro", tipo: "passista", raridade: "raro", emoji: "💃", poder: 58, desc: "Pés velozes" },
-    { id: 13, nome: "Dançarina Estrela", tipo: "passista", raridade: "raro", emoji: "💃", poder: 52, desc: "Brilha na avenida" },
-    { id: 14, nome: "Passista Iniciante", tipo: "passista", raridade: "comum", emoji: "💃", poder: 28, desc: "Aprendendo os passos" },
-    { id: 15, nome: "Componente Alegre", tipo: "passista", raridade: "comum", emoji: "💃", poder: 22, desc: "Samba no pé" },
-    { id: 16, nome: "Sambista Novato", tipo: "passista", raridade: "comum", emoji: "💃", poder: 18, desc: "Começando na avenida" },
+    // PASSISTAS (Estrelas da Avenida) (8)
+    { id: 9, nome: "Selminha Sorriso", tipo: "passista", raridade: "lendario", emoji: "💃", poder: 95, desc: "Rainha absoluta da Mangueira", escola: "Mangueira" },
+    { id: 10, nome: "Evelyn Bastos", tipo: "passista", raridade: "lendario", emoji: "💃", poder: 93, desc: "Musa e rainha de bateria icônica", escola: "Mangueira" },
+    { id: 11, nome: "Juliana Paes", tipo: "passista", raridade: "epico", emoji: "💃", poder: 80, desc: "Atriz e musa da Grande Rio", escola: "Grande Rio" },
+    { id: 12, nome: "Sabrina Sato", tipo: "passista", raridade: "epico", emoji: "💃", poder: 75, desc: "Estrela da Vila Isabel", escola: "Vila Isabel" },
+    { id: 13, nome: "Raissa Oliveira", tipo: "passista", raridade: "raro", emoji: "💃", poder: 65, desc: "Rainha de bateria Beija-Flor", escola: "Beija-Flor" },
+    { id: 14, nome: "Passista Mirim", tipo: "passista", raridade: "raro", emoji: "💃", poder: 52, desc: "Nova geração da Portela", escola: "Portela" },
+    { id: 15, nome: "Componente Apaixonado", tipo: "passista", raridade: "comum", emoji: "💃", poder: 28, desc: "Folião que ama desfilar" },
+    { id: 16, nome: "Primeira Passista", tipo: "passista", raridade: "comum", emoji: "💃", poder: 18, desc: "Estreando na Sapucaí" },
     
-    // CARNAVALESCOS (5)
-    { id: 17, nome: "Mestre das Cores", tipo: "carnavalesco", raridade: "lendario", emoji: "🎨", poder: 98, desc: "Visão artística única" },
-    { id: 18, nome: "Artista Premiado", tipo: "carnavalesco", raridade: "epico", emoji: "🎨", poder: 78, desc: "Alegorias espetaculares" },
-    { id: 19, nome: "Designer Criativo", tipo: "carnavalesco", raridade: "raro", emoji: "🎨", poder: 56, desc: "Ideias inovadoras" },
-    { id: 20, nome: "Cenógrafo Hábil", tipo: "carnavalesco", raridade: "comum", emoji: "🎨", poder: 32, desc: "Bom senso estético" },
-    { id: 21, nome: "Ajudante de Arte", tipo: "carnavalesco", raridade: "comum", emoji: "🎨", poder: 24, desc: "Apoia a produção" },
+    // CARNAVALESCOS (Gênios das Alegorias) (7)
+    { id: 17, nome: "Joãosinho Trinta", tipo: "carnavalesco", raridade: "lendario", emoji: "🎨", poder: 100, desc: "O maior de todos! Revolucionou o carnaval", escola: "Beija-Flor" },
+    { id: 18, nome: "Fernando Pamplona", tipo: "carnavalesco", raridade: "lendario", emoji: "🎨", poder: 98, desc: "Pai da moderna estética carnavalesca", escola: "Salgueiro" },
+    { id: 19, nome: "Paulo Barros", tipo: "carnavalesco", raridade: "epico", emoji: "🎨", poder: 85, desc: "Inovador e multicampeão", escola: "Unidos da Tijuca" },
+    { id: 20, nome: "Rosa Magalhães", tipo: "carnavalesco", raridade: "epico", emoji: "🎨", poder: 80, desc: "Primeira mulher campeã", escola: "Imperatriz" },
+    { id: 21, nome: "Leandro Vieira", tipo: "carnavalesco", raridade: "epico", emoji: "🎨", poder: 78, desc: "Jovem gênio da Mangueira", escola: "Mangueira" },
+    { id: 22, nome: "Cenógrafo Promissor", tipo: "carnavalesco", raridade: "raro", emoji: "🎨", poder: 56, desc: "Futuro grande nome" },
+    { id: 23, nome: "Assistente de Barracão", tipo: "carnavalesco", raridade: "comum", emoji: "🎨", poder: 32, desc: "Aprendendo o ofício" },
     
-    // COMPOSITORES (5)
-    { id: 22, nome: "Poeta do Samba", tipo: "compositor", raridade: "lendario", emoji: "🎤", poder: 92, desc: "Versos inesquecíveis" },
-    { id: 23, nome: "Melodia Dourada", tipo: "compositor", raridade: "epico", emoji: "🎤", poder: 72, desc: "Refrãos marcantes" },
-    { id: 24, nome: "Letrista Talentoso", tipo: "compositor", raridade: "raro", emoji: "🎤", poder: 54, desc: "Rimas perfeitas" },
-    { id: 25, nome: "Sambista Promissor", tipo: "compositor", raridade: "comum", emoji: "🎤", poder: 30, desc: "Primeiras composições" },
-    { id: 26, nome: "Versejador Junior", tipo: "compositor", raridade: "comum", emoji: "🎤", poder: 26, desc: "Aprendendo a compor" },
+    // COMPOSITORES (Poetas do Samba) (7)
+    { id: 24, nome: "Silas de Oliveira", tipo: "compositor", raridade: "lendario", emoji: "🎤", poder: 100, desc: "Autor de 'Heróis da Liberdade' - imortal", escola: "Império Serrano" },
+    { id: 25, nome: "Martinho da Vila", tipo: "compositor", raridade: "lendario", emoji: "🎤", poder: 95, desc: "Lenda viva do samba", escola: "Vila Isabel" },
+    { id: 26, nome: "Zeca Pagodinho", tipo: "compositor", raridade: "epico", emoji: "🎤", poder: 82, desc: "Rei do pagode e do samba", escola: "Mangueira" },
+    { id: 27, nome: "Arlindo Cruz", tipo: "compositor", raridade: "epico", emoji: "🎤", poder: 78, desc: "Mestre do samba e do cavaco", escola: "Império Serrano" },
+    { id: 28, nome: "Marquinhos Oseas", tipo: "compositor", raridade: "raro", emoji: "🎤", poder: 60, desc: "Compositor premiado", escola: "Salgueiro" },
+    { id: 29, nome: "Compositor da Comunidade", tipo: "compositor", raridade: "comum", emoji: "🎤", poder: 30, desc: "Samba-enredo promissor" },
+    { id: 30, nome: "Jovem Versejador", tipo: "compositor", raridade: "comum", emoji: "🎤", poder: 26, desc: "Primeira composição" },
     
-    // DESTAQUES (4)
-    { id: 27, nome: "Estrela do Carnaval", tipo: "destaque", raridade: "lendario", emoji: "⭐", poder: 105, desc: "Brilha mais que o sol" },
-    { id: 28, nome: "Celebridade VIP", tipo: "destaque", raridade: "epico", emoji: "⭐", poder: 82, desc: "Rouba a cena" },
-    { id: 29, nome: "Influencer da Avenida", tipo: "destaque", raridade: "raro", emoji: "⭐", poder: 60, desc: "Chama atenção" },
-    { id: 30, nome: "Folião Animado", tipo: "destaque", raridade: "comum", emoji: "⭐", poder: 35, desc: "Pura alegria" }
+    // DESTAQUES (Celebridades & Personalidades) (6)
+    { id: 31, nome: "Ivete Sangalo", tipo: "destaque", raridade: "lendario", emoji: "⭐", poder: 100, desc: "Rainha do carnaval baiano na Sapucaí", escola: "Grande Rio" },
+    { id: 32, nome: "Claudia Leitte", tipo: "destaque", raridade: "epico", emoji: "⭐", poder: 85, desc: "Axé music na avenida", escola: "Mocidade" },
+    { id: 33, nome: "Anitta", tipo: "destaque", raridade: "epico", emoji: "⭐", poder: 82, desc: "Girl from Rio arrasa", escola: "Salgueiro" },
+    { id: 34, nome: "Paolla Oliveira", tipo: "destaque", raridade: "epico", emoji: "⭐", poder: 80, desc: "Atriz global musa da Grande Rio", escola: "Grande Rio" },
+    { id: 35, nome: "Famoso do Momento", tipo: "destaque", raridade: "raro", emoji: "⭐", poder: 60, desc: "Celebridade convidada" },
+    { id: 36, nome: "Folião Animado", tipo: "destaque", raridade: "comum", emoji: "⭐", poder: 35, desc: "Pura alegria na avenida" }
 ];
 
 // ============================================
