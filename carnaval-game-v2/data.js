@@ -14,7 +14,7 @@ const PERSONAGENS = [
     { id: 5, nome: "Ritmista da Mocidade", tipo: "ritmista", raridade: "raro", emoji: "🥁", poder: 60, desc: "Bateria show da Padre Miguel", escola: "Mocidade" },
     { id: 6, nome: "Tamborim da Beija-Flor", tipo: "ritmista", raridade: "raro", emoji: "🥁", poder: 55, desc: "Precisão e garra de Nilópolis", escola: "Beija-Flor" },
     { id: 7, nome: "Ritmista da Vila", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 30, desc: "Aprendiz da Vila Isabel", escola: "Vila Isabel" },
-    { id: 8, nome: "Pandeirista Novato", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 20, desc: "Iniciante na Sapucaí", escola: null" },
+    { id: 8, nome: "Pandeirista Novato", tipo: "ritmista", raridade: "comum", emoji: "🥁", poder: 20, desc: "Iniciante na Sapucaí", escola: null },
     
     // PASSISTAS (Estrelas da Avenida) (8)
     { id: 9, nome: "Selminha Sorriso", tipo: "passista", raridade: "lendario", emoji: "💃", poder: 95, desc: "Rainha absoluta da Mangueira", escola: "Mangueira" },

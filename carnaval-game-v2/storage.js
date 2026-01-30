@@ -44,9 +44,9 @@ const Storage = {
             recompensasRecebidas: [], // [dia1, dia2, ...]
             
             // Stats
-            tempoDe Jogo: 0, // minutos
+            tempoDeJogo: 0, // minutos
             bausAbertos: 0,
-            gemesGastas: 0,
+            gemasGastas: 0,
             estrelasGastas: 0,
             
             // Monetização (tracking)
