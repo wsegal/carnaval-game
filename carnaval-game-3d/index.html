@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Carnaval 3D - Sambódromo</title>
+    <link rel="stylesheet" href="mobile.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        #info-panel h2 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #FFD700;
+        }
+
+        #info-panel p {
+            margin: 5px 0;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            z-index: 200;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #scores-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            min-width: 400px;
+            z-index: 150;
+            border: 3px solid #FFD700;
+        }
+
+        #scores-panel h2 {
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .score-item strong {
+            color: #FFD700;
+        }
+
+        #total-score {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #btn-finish {
+            width: 100%;
+            margin-top: 15px;
+            padding: 15px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <h1>🎭 Carregando Sambódromo...</h1>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="info-panel">
+        <h2 id="school-name">🎭 Carnaval 3D - Sambódromo</h2>
+        <p>📍 <strong>Local:</strong> Marquês de Sapucaí</p>
+        <p>🎯 <strong>Espaços Publicitários:</strong> <span id="ad-count">0</span></p>
+        <p>🎊 <strong>Desfile:</strong> <span id="parade-status">Parado</span></p>
+        <p>🎭 <strong>Elementos:</strong> <span id="element-count">-</span></p>
+        <p>📊 <strong>FPS:</strong> <span id="fps">60</span></p>
+        <p>🎥 <strong>Câmera:</strong> <span id="camera-mode">Fixa</span></p>
+    </div>
+    
+    <!-- Painel de Notas (aparece durante desfile) -->
+    <div id="scores-panel" class="hidden">
+        <h2>📊 Avaliação dos Jurados</h2>
+        <div id="scores-content"></div>
+        <div id="total-score"></div>
+        <button id="btn-finish">✅ Finalizar Desfile</button>
+    </div>
+
+    <div id="controls">
+        <button id="btn-camera">📹 Câmera: Fixa</button>
+        <button id="btn-parade">🎊 Iniciar Desfile</button>
+        <button id="btn-reset">🔄 Resetar</button>
+        <button id="btn-ads" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">💰 Stats Anúncios</button>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Bridge Script -->
+    <script src="bridge.js"></script>
+    
+    <!-- Performance Optimizer -->
+    <script src="performance.js"></script>
+    
+    <!-- Ads Manager Script -->
+    <script src="ads-manager.js"></script>
+    
+    <!-- Game Script -->
+    <script src="game3d.js"></script>
+</body>
+</html>

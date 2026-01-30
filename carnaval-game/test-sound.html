@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Som</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-weight: bold;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        #status {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .log {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 Teste de Sistema de Som</h1>
+        
+        <div id="status">
+            <strong>Status:</strong> <span id="status-text">Aguardando...</span>
+        </div>
+
+        <div>
+            <h3>Testar Sons:</h3>
+            <button onclick="testSound('click')">🖱️ Click</button>
+            <button onclick="testSound('invest')">💰 Invest</button>
+            <button onclick="testSound('parade')">🥁 Parade</button>
+            <button onclick="testSound('success')">✅ Success</button>
+            <button onclick="testSound('fail')">❌ Fail</button>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button onclick="initializeAudio()">🔄 Inicializar AudioContext</button>
+            <button onclick="checkStatus()">📊 Verificar Status</button>
+            <button onclick="clearLogs()">🗑️ Limpar Logs</button>
+        </div>
+
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        let audioContext = null;
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLogs() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        async function initializeAudio() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    log('✅ AudioContext criado');
+                }
+                
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    log('✅ AudioContext resumed');
+                }
+                
+                document.getElementById('status-text').textContent = 
+                    `AudioContext: ${audioContext.state}`;
+                log(`📊 Estado: ${audioContext.state}`);
+                
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`);
+                document.getElementById('status-text').textContent = 'ERRO';
+            }
+        }
+
+        function checkStatus() {
+            if (!audioContext) {
+                log('⚠️ AudioContext não inicializado');
+                document.getElementById('status-text').textContent = 'NÃO INICIALIZADO';
+                return;
+            }
+            
+            log(`📊 Estado: ${audioContext.state}`);
+            log(`📊 Sample Rate: ${audioContext.sampleRate} Hz`);
+            log(`📊 Current Time: ${audioContext.currentTime.toFixed(2)}s`);
+            
+            document.getElementById('status-text').textContent = 
+                `${audioContext.state} (${audioContext.sampleRate} Hz)`;
+        }
+
+        async function testSound(type) {
+            log(`🎵 Testando som: ${type}`);
+            
+            await initializeAudio();
+            
+            if (audioContext.state !== 'running') {
+                log('❌ AudioContext não está rodando!');
+                return;
+            }
+
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                const now = audioContext.currentTime;
+                
+                switch(type) {
+                    case 'click':
+                        oscillator.frequency.value = 800;
+                        gainNode.gain.value = 0.1;
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.1);
+                        break;
+                    case 'invest':
+                        oscillator.frequency.value = 600;
+                        gainNode.gain.value = 0.15;
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.15);
+                        break;
+                    case 'parade':
+                        oscillator.frequency.value = 200;
+                        gainNode.gain.value = 0.2;
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.3);
+                        break;
+                    case 'success':
+                        oscillator.frequency.value = 1000;
+                        gainNode.gain.value = 0.15;
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.2);
+                        
+                        setTimeout(() => {
+                            const osc2 = audioContext.createOscillator();
+                            const gain2 = audioContext.createGain();
+                            osc2.connect(gain2);
+                            gain2.connect(audioContext.destination);
+                            osc2.frequency.value = 1200;
+                            gain2.gain.value = 0.15;
+                            const now2 = audioContext.currentTime;
+                            osc2.start(now2);
+                            osc2.stop(now2 + 0.2);
+                        }, 100);
+                        break;
+                    case 'fail':
+                        oscillator.frequency.value = 300;
+                        gainNode.gain.value = 0.2;
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.5);
+                        break;
+                }
+                
+                log(`✅ Som ${type} tocado com sucesso`);
+                
+            } catch (error) {
+                log(`❌ Erro ao tocar som: ${error.message}`);
+            }
+        }
+
+        // Auto-inicializar ao carregar
+        window.addEventListener('DOMContentLoaded', () => {
+            log('🎮 Página carregada');
+            log('💡 Clique em "Inicializar AudioContext" para começar');
+        });
+    </script>
+</body>
+</html>

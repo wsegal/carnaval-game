@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Escola de Samba</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Tela Inicial -->
+    <div id="screen-menu" class="screen active">
+        <div class="container">
+            <h1>🎭 Simulador de Escola de Samba</h1>
+            <h2>Da Série de Acesso ao Grupo Especial</h2>
+            <div class="menu-buttons">
+                <button onclick="game.startNewGame()" class="btn-primary">🎉 Novo Jogo</button>
+                <button onclick="game.loadGame()" class="btn-secondary" id="btn-continue">📂 Continuar</button>
+                <button onclick="game.showCredits()" class="btn-secondary">ℹ️ Sobre</button>
+                <button onclick="game.toggleSound()" id="sound-toggle" class="btn-secondary">🔊 Som: ON</button>
+            </div>
+            <div style="margin-top: 20px; text-align: center; opacity: 0.7; font-size: 0.9em;">
+                <p>💡 Dica: Abra o Console (F12) para ver logs de eventos e sons</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Criação da Escola -->
+    <div id="screen-create" class="screen">
+        <div class="container">
+            <h1>✨ Crie sua Escola de Samba</h1>
+            <form id="form-create" onsubmit="game.createSchool(event)">
+                <div class="form-group">
+                    <label>Nome da Escola:</label>
+                    <input type="text" id="school-name" placeholder="Ex: Unidos da Viradouro" required>
+                </div>
+                <div class="form-group">
+                    <label>Cores da Escola:</label>
+                    <div class="color-picker">
+                        <input type="color" id="color1" value="#ff0000">
+                        <input type="color" id="color2" value="#ffffff">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">🚀 Começar Jornada</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Principal -->
+    <div id="screen-dashboard" class="screen">
+        <div class="header">
+            <div class="school-info">
+                <h2 id="dashboard-school-name">Escola</h2>
+                <div class="school-colors" id="school-colors-display"></div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="label">💰 Dinheiro:</span>
+                    <span id="stat-money" class="value">R$ 50.000</span>
+                </div>
+                <div class="stat">
+                    <span class="label">🏆 Grupo:</span>
+                    <span id="stat-group" class="value">Acesso</span>
+                </div>
+                <div class="stat">
+                    <span class="label">📅 Ano:</span>
+                    <span id="stat-year" class="value">2026</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="sections-grid">
+                <!-- Samba-Enredo -->
+                <div class="section-card">
+                    <h3>🎵 Samba-Enredo</h3>
+                    <p id="samba-status" class="status">Não escolhido</p>
+                    <div id="samba-quality" class="quality-bar">
+                        <div class="quality-fill" style="width: 0%"></div>
+                    </div>
+                    <button onclick="game.chooseSamba()" class="btn-action">Escolher Samba</button>
+                </div>
+
+                <!-- Alegorias -->
+                <div class="section-card">
+                    <h3>🎪 Alegorias</h3>
+                    <p id="alegoria-status" class="status">Qualidade: 50%</p>
+                    <div class="quality-bar">
+                        <div id="alegoria-quality" class="quality-fill" style="width: 50%"></div>
+                    </div>
+                    <button onclick="game.investSection('alegoria')" class="btn-action">Investir (R$ 10.000)</button>
+                </div>
+
+                <!-- Bateria -->
+                <div class="section-card">
+                    <h3>🥁 Bateria</h3>
+                    <p id="bateria-status" class="status">Qualidade: 50%</p>
+                    <div class="quality-bar">
+                        <div id="bateria-quality" class="quality-fill" style="width: 50%"></div>
+                    </div>
+                    <button onclick="game.investSection('bateria')" class="btn-action">Treinar (R$ 8.000)</button>
+                </div>
+
+                <!-- Comissão de Frente -->
+                <div class="section-card">
+                    <h3>💃 Comissão de Frente</h3>
+                    <p id="comissao-status" class="status">Qualidade: 50%</p>
+                    <div class="quality-bar">
+                        <div id="comissao-quality" class="quality-fill" style="width: 50%"></div>
+                    </div>
+                    <button onclick="game.investSection('comissao')" class="btn-action">Treinar (R$ 7.000)</button>
+                </div>
+
+                <!-- Fantasias -->
+                <div class="section-card">
+                    <h3>👗 Fantasias</h3>
+                    <p id="fantasia-status" class="status">Qualidade: 50%</p>
+                    <div class="quality-bar">
+                        <div id="fantasia-quality" class="quality-fill" style="width: 50%"></div>
+                    </div>
+                    <button onclick="game.investSection('fantasia')" class="btn-action">Investir (R$ 12.000)</button>
+                </div>
+
+                <!-- Harmonia -->
+                <div class="section-card">
+                    <h3>🎼 Harmonia</h3>
+                    <p id="harmonia-status" class="status">Qualidade: 50%</p>
+                    <div class="quality-bar">
+                        <div id="harmonia-quality" class="quality-fill" style="width: 50%"></div>
+                    </div>
+                    <button onclick="game.investSection('harmonia')" class="btn-action">Treinar (R$ 6.000)</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="game.showParade()" class="btn-parade">🎊 Desfile 2D (Clássico)</button>
+                <button onclick="game.showParade3D()" class="btn-parade" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">🎬 Desfile 3D (Novo!)</button>
+                <button onclick="game.saveGame()" class="btn-secondary">💾 Salvar Jogo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Escolha de Samba -->
+    <div id="screen-samba" class="screen">
+        <div class="container">
+            <h1>🎵 Escolha o Samba-Enredo</h1>
+            <p class="subtitle">Os compositores apresentaram suas obras. Escolha a melhor!</p>
+            <div id="samba-options" class="options-grid"></div>
+        </div>
+    </div>
+
+    <!-- Desfile -->
+    <div id="screen-parade" class="screen">
+        <div class="parade-container">
+            <h1>🎊 Desfile na Marquês de Sapucaí!</h1>
+            <div id="parade-animation" class="parade-animation">
+                <div class="parade-element">🥁</div>
+                <div class="parade-element">💃</div>
+                <div class="parade-element">🎭</div>
+                <div class="parade-element">🎪</div>
+            </div>
+            <div id="parade-commentary" class="commentary">
+                <p>A escola está entrando na avenida...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultado -->
+    <div id="screen-results" class="screen">
+        <div class="container">
+            <h1>📊 Apuração das Notas</h1>
+            <div id="results-school-name" class="results-school"></div>
+            <div id="results-scores" class="scores-grid"></div>
+            <div id="results-total" class="total-score"></div>
+            <div id="results-classification" class="classification"></div>
+            <div class="action-buttons">
+                <button onclick="game.nextYear()" class="btn-primary">➡️ Próximo Ano</button>
+                <button onclick="game.backToDashboard()" class="btn-secondary">📋 Ver Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Créditos -->
+    <div id="screen-credits" class="screen">
+        <div class="container">
+            <h1>ℹ️ Sobre o Jogo</h1>
+            <p><strong>Simulador de Escola de Samba</strong></p>
+            <p>Versão 1.1 - Atualizado</p>
+            <p>Criado com ❤️ e Vibecoding</p>
+            
+            <div style="text-align: left; margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <h3>🆕 Novidades da v1.1:</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li>🎵 Sistema de som (pode desligar/ligar)</li>
+                    <li>📜 18 sambas diferentes para escolher</li>
+                    <li>🌧️ Eventos aleatórios durante o desfile</li>
+                    <li>📈 Grupos mais difíceis = jurados mais exigentes</li>
+                </ul>
+            </div>
+            
+            <button onclick="game.showScreen('screen-menu')" class="btn-secondary" style="margin-top: 20px;">Voltar</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

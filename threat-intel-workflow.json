@@ -1,0 +1,184 @@
+{
+  "name": "Axur Threat Intel Feed - Semanal",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "name": "Schedule - Segunda 9h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Data da última semana\nconst oneWeekAgo = new Date();\noneWeekAgo.setDate(oneWeekAgo.getDate() - 7);\nconst addedAfter = oneWeekAgo.toISOString();\n\n// Produtos monitorados\nconst vendors = [\n  \"Fortigate\", \"Fortinet\",\n  \"Palo Alto\", \"PaloAlto\",\n  \"Microsoft\", \"Windows\", \"Azure\", \"M365\",\n  \"Mimecast\",\n  \"Netskope\",\n  \"Sentinel One\", \"SentinelOne\",\n  \"Exabean\",\n  \"N8N\"\n];\n\nreturn [{\n  json: {\n    addedAfter,\n    vendors,\n    collectionId: \"{{COLLECTION_ID}}\" // Você precisa descobrir o ID correto\n  }\n}];"
+      },
+      "name": "Prepara Parâmetros",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.axur.com/gateway/1.0/taxii2/1/collections/{{ $json.collectionId }}/objects/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "added_after",
+              "value": "={{ $json.addedAfter }}"
+            },
+            {
+              "name": "match[type]",
+              "value": "indicator,vulnerability,malware,threat-actor,attack-pattern"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{API_KEY}}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/taxii+json;version=2.1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Buscar Threat Intel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst vendors = $('Prepara Parâmetros').first().json.vendors;\n\nconst filtered = [];\n\nfor (const item of items) {\n  if (!item.json.objects) continue;\n  \n  for (const obj of item.json.objects) {\n    // Buscar menções aos vendors\n    const text = JSON.stringify(obj).toLowerCase();\n    \n    const matchedVendors = vendors.filter(v => \n      text.includes(v.toLowerCase())\n    );\n    \n    if (matchedVendors.length > 0) {\n      filtered.push({\n        json: {\n          ...obj,\n          matchedVendors\n        }\n      });\n    }\n  }\n}\n\nreturn filtered;"
+      },
+      "name": "Filtrar por Produtos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "vulnerability",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "zero-day",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        }
+      },
+      "name": "Verificar Zero-Day",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nlet message = \"🚨 **ALERTA CRÍTICO - Zero-Day Detectado!** 🚨\\n\\n\";\nmessage += \"Data: \" + new Date().toLocaleString('pt-BR') + \"\\n\\n\";\n\nfor (const item of items) {\n  const obj = item.json;\n  message += `**${obj.name || obj.id}**\\n`;\n  message += `Tipo: ${obj.type}\\n`;\n  message += `Produtos afetados: ${obj.matchedVendors.join(', ')}\\n`;\n  if (obj.description) message += `Descrição: ${obj.description}\\n`;\n  if (obj.external_references) {\n    message += \"Referências:\\n\";\n    obj.external_references.slice(0, 3).forEach(ref => {\n      message += `- ${ref.source_name}: ${ref.url}\\n`;\n    });\n  }\n  message += \"\\n---\\n\\n\";\n}\n\nreturn [{ json: { message } }];"
+      },
+      "name": "Formatar Alerta Urgente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "threat-intel-urgent",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook - Urgente Teams",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [1450, 200],
+      "webhookId": "{{TEAMS_WEBHOOK_URGENT}}"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst grouped = {\n  vulnerabilities: [],\n  indicators: [],\n  malware: [],\n  threatActors: [],\n  ttps: []\n};\n\nfor (const item of items) {\n  const obj = item.json;\n  \n  switch(obj.type) {\n    case 'vulnerability':\n      grouped.vulnerabilities.push(obj);\n      break;\n    case 'indicator':\n      grouped.indicators.push(obj);\n      break;\n    case 'malware':\n      grouped.malware.push(obj);\n      break;\n    case 'threat-actor':\n      grouped.threatActors.push(obj);\n      break;\n    case 'attack-pattern':\n      grouped.ttps.push(obj);\n      break;\n  }\n}\n\nlet message = \"📊 **Relatório Semanal - Threat Intelligence** 📊\\n\\n\";\nmessage += `Data: ${new Date().toLocaleDateString('pt-BR')}\\n`;\nmessage += `Período: Últimos 7 dias\\n\\n`;\nmessage += \"---\\n\\n\";\n\n// Vulnerabilidades\nif (grouped.vulnerabilities.length > 0) {\n  message += `🔴 **Vulnerabilidades (${grouped.vulnerabilities.length})**\\n\\n`;\n  grouped.vulnerabilities.slice(0, 10).forEach(v => {\n    message += `• **${v.name || v.id}**\\n`;\n    message += `  Produtos: ${v.matchedVendors.join(', ')}\\n`;\n    if (v.external_references) {\n      const cve = v.external_references.find(r => r.source_name === 'cve');\n      if (cve) message += `  CVE: ${cve.external_id}\\n`;\n    }\n    message += \"\\n\";\n  });\n  message += \"\\n\";\n}\n\n// IOCs\nif (grouped.indicators.length > 0) {\n  message += `⚠️ **Indicadores de Compromisso - IOCs (${grouped.indicators.length})**\\n\\n`;\n  grouped.indicators.slice(0, 15).forEach(i => {\n    message += `• ${i.pattern || i.name || i.id}\\n`;\n    message += `  Produtos: ${i.matchedVendors.join(', ')}\\n\\n`;\n  });\n  message += \"\\n\";\n}\n\n// Malware\nif (grouped.malware.length > 0) {\n  message += `☠️ **Malware (${grouped.malware.length})**\\n\\n`;\n  grouped.malware.slice(0, 10).forEach(m => {\n    message += `• **${m.name || m.id}**\\n`;\n    message += `  Produtos: ${m.matchedVendors.join(', ')}\\n\\n`;\n  });\n  message += \"\\n\";\n}\n\n// Threat Actors\nif (grouped.threatActors.length > 0) {\n  message += `👤 **Threat Actors (${grouped.threatActors.length})**\\n\\n`;\n  grouped.threatActors.slice(0, 10).forEach(t => {\n    message += `• **${t.name || t.id}**\\n`;\n    if (t.aliases) message += `  Aliases: ${t.aliases.join(', ')}\\n`;\n    message += `  Produtos: ${t.matchedVendors.join(', ')}\\n\\n`;\n  });\n  message += \"\\n\";\n}\n\n// TTPs\nif (grouped.ttps.length > 0) {\n  message += `🎯 **TTPs / MITRE ATT&CK (${grouped.ttps.length})**\\n\\n`;\n  grouped.ttps.slice(0, 10).forEach(ttp => {\n    message += `• **${ttp.name || ttp.id}**\\n`;\n    if (ttp.external_references) {\n      const mitre = ttp.external_references.find(r => r.source_name === 'mitre-attack');\n      if (mitre) message += `  MITRE: ${mitre.external_id}\\n`;\n    }\n    message += `  Produtos: ${ttp.matchedVendors.join(', ')}\\n\\n`;\n  });\n  message += \"\\n\";\n}\n\nmessage += \"---\\n\\n\";\nmessage += \"Fonte: Axur Threat Intelligence\\n\";\n\nreturn [{ json: { message } }];"
+      },
+      "name": "Formatar Relatório Semanal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 400]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "threat-intel-weekly",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook - Semanal Teams",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [1450, 400],
+      "webhookId": "{{TEAMS_WEBHOOK_WEEKLY}}"
+    }
+  ],
+  "connections": {
+    "Schedule - Segunda 9h": {
+      "main": [[{ "node": "Prepara Parâmetros", "type": "main", "index": 0 }]]
+    },
+    "Prepara Parâmetros": {
+      "main": [[{ "node": "Buscar Threat Intel", "type": "main", "index": 0 }]]
+    },
+    "Buscar Threat Intel": {
+      "main": [[{ "node": "Filtrar por Produtos", "type": "main", "index": 0 }]]
+    },
+    "Filtrar por Produtos": {
+      "main": [[{ "node": "Verificar Zero-Day", "type": "main", "index": 0 }]]
+    },
+    "Verificar Zero-Day": {
+      "main": [
+        [{ "node": "Formatar Alerta Urgente", "type": "main", "index": 0 }],
+        [{ "node": "Formatar Relatório Semanal", "type": "main", "index": 0 }]
+      ]
+    },
+    "Formatar Alerta Urgente": {
+      "main": [[{ "node": "Webhook - Urgente Teams", "type": "main", "index": 0 }]]
+    },
+    "Formatar Relatório Semanal": {
+      "main": [[{ "node": "Webhook - Semanal Teams", "type": "main", "index": 0 }]]
+    }
+  }
+}
