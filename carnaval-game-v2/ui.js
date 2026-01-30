@@ -313,7 +313,12 @@ const UI = {
         if (horas > 0) tempo = `${horas}h ${mins}min`;
         else tempo = `${mins} minutos`;
         
-        this.mostrarNotificacao(`💰 Você ganhou ${ganho} ⭐ enquanto estava offline! (${tempo})`);
+        console.log(`💰 Idle reward: ${ganho} ⭐ (${tempo})`);
+        
+        // Aguardar DOM estar pronto
+        setTimeout(() => {
+            this.mostrarNotificacao(`💰 Você ganhou ${ganho} ⭐ enquanto estava offline! (${tempo})`);
+        }, 1500);
     },
     
     // ============================================
@@ -322,6 +327,10 @@ const UI = {
     
     mostrarNotificacao(texto) {
         const toast = document.getElementById('toast');
+        if (!toast) {
+            console.warn('Toast element not found, logging instead:', texto);
+            return;
+        }
         toast.textContent = texto;
         toast.classList.add('show');
         
