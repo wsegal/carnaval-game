@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 DEBUG - Carnaval Game</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0D1117;
+            color: #FFFFFF;
+            padding: 20px;
+        }
+        .success { color: #00FF00; }
+        .error { color: #FF0000; }
+        .info { color: #00FFFF; }
+        pre { background: #1F2937; padding: 10px; border-radius: 5px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>🐛 CARNAVAL GAME - DEBUG</h1>
+    <div id="log"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(msg, type = 'info') {
+            const p = document.createElement('p');
+            p.className = type;
+            p.textContent = msg;
+            log.appendChild(p);
+            console.log(msg);
+        }
+        
+        addLog('='.repeat(50), 'info');
+        addLog('🎭 INICIANDO DEBUG', 'info');
+        addLog('='.repeat(50), 'info');
+        addLog('');
+        
+        // Teste 1: Carregar data.js
+        addLog('📦 Teste 1: Carregando data.js...', 'info');
+        const script1 = document.createElement('script');
+        script1.src = 'data.js';
+        script1.onload = () => {
+            try {
+                addLog('✅ data.js carregado!', 'success');
+                addLog(`   - PERSONAGENS: ${PERSONAGENS.length} personagens`, 'success');
+                addLog(`   - RARIDADES: ${Object.keys(RARIDADES).length} tipos`, 'success');
+                addLog(`   - BAUS: ${Object.keys(BAUS).length} tipos`, 'success');
+                
+                // Teste 2: Carregar storage.js
+                addLog('', 'info');
+                addLog('💾 Teste 2: Carregando storage.js...', 'info');
+                const script2 = document.createElement('script');
+                script2.src = 'storage.js';
+                script2.onload = () => {
+                    try {
+                        addLog('✅ storage.js carregado!', 'success');
+                        
+                        const defaultState = Storage.getDefaultState();
+                        addLog(`   - Estado padrão: ${Object.keys(defaultState).length} propriedades`, 'success');
+                        addLog(`   - Estrelas iniciais: ${defaultState.estrelas}`, 'success');
+                        addLog(`   - Gemas iniciais: ${defaultState.gemas}`, 'success');
+                        
+                        // Teste 3: Carregar game.js
+                        addLog('', 'info');
+                        addLog('🎮 Teste 3: Carregando game.js...', 'info');
+                        const script3 = document.createElement('script');
+                        script3.src = 'game.js';
+                        script3.onload = () => {
+                            try {
+                                addLog('✅ game.js carregado!', 'success');
+                                addLog(`   - Game object exists: ${typeof Game !== 'undefined'}`, 'success');
+                                
+                                // Teste 4: Carregar ui.js
+                                addLog('', 'info');
+                                addLog('🎨 Teste 4: Carregando ui.js...', 'info');
+                                const script4 = document.createElement('script');
+                                script4.src = 'ui.js';
+                                script4.onload = () => {
+                                    try {
+                                        addLog('✅ ui.js carregado!', 'success');
+                                        addLog(`   - UI object exists: ${typeof UI !== 'undefined'}`, 'success');
+                                        
+                                        // Teste 5: Inicializar Game
+                                        addLog('', 'info');
+                                        addLog('🚀 Teste 5: Inicializando Game...', 'info');
+                                        try {
+                                            Game.init();
+                                            addLog('✅ Game.init() executado com sucesso!', 'success');
+                                            
+                                            addLog('', 'info');
+                                            addLog('📊 Estado do jogo:', 'info');
+                                            addLog(JSON.stringify(Game.state, null, 2), 'info');
+                                            
+                                            addLog('', 'info');
+                                            addLog('='.repeat(50), 'success');
+                                            addLog('🎉 TODOS OS TESTES PASSARAM!', 'success');
+                                            addLog('='.repeat(50), 'success');
+                                            addLog('', 'info');
+                                            addLog('➡️ O jogo está funcionando corretamente!', 'success');
+                                            addLog('➡️ Abra index.html novamente (CTRL+SHIFT+R para limpar cache)', 'info');
+                                            
+                                        } catch (error) {
+                                            addLog('❌ ERRO em Game.init():', 'error');
+                                            addLog(error.message, 'error');
+                                            addLog(error.stack, 'error');
+                                        }
+                                        
+                                    } catch (error) {
+                                        addLog('❌ ERRO ao processar ui.js:', 'error');
+                                        addLog(error.message, 'error');
+                                        addLog(error.stack, 'error');
+                                    }
+                                };
+                                script4.onerror = () => {
+                                    addLog('❌ ERRO: Não conseguiu carregar ui.js', 'error');
+                                    addLog('Verifique se o arquivo existe!', 'error');
+                                };
+                                document.head.appendChild(script4);
+                                
+                            } catch (error) {
+                                addLog('❌ ERRO ao processar game.js:', 'error');
+                                addLog(error.message, 'error');
+                                addLog(error.stack, 'error');
+                            }
+                        };
+                        script3.onerror = () => {
+                            addLog('❌ ERRO: Não conseguiu carregar game.js', 'error');
+                        };
+                        document.head.appendChild(script3);
+                        
+                    } catch (error) {
+                        addLog('❌ ERRO ao processar storage.js:', 'error');
+                        addLog(error.message, 'error');
+                        addLog(error.stack, 'error');
+                    }
+                };
+                script2.onerror = () => {
+                    addLog('❌ ERRO: Não conseguiu carregar storage.js', 'error');
+                };
+                document.head.appendChild(script2);
+                
+            } catch (error) {
+                addLog('❌ ERRO ao processar data.js:', 'error');
+                addLog(error.message, 'error');
+                addLog(error.stack, 'error');
+            }
+        };
+        script1.onerror = () => {
+            addLog('❌ ERRO: Não conseguiu carregar data.js', 'error');
+            addLog('Verifique se o arquivo existe na mesma pasta!', 'error');
+        };
+        document.head.appendChild(script1);
+    </script>
+</body>
+</html>
