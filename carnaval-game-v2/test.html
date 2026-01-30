@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test V2.0</title>
+</head>
+<body>
+    <h1>Testing Syntax...</h1>
+    <div id="output"></div>
+    
+    <script src="data.js"></script>
+    <script src="storage.js"></script>
+    <script src="game.js"></script>
+    <script src="ui.js"></script>
+    
+    <script>
+        const output = document.getElementById('output');
+        try {
+            output.innerHTML += '<p>✅ data.js loaded (' + PERSONAGENS.length + ' personagens)</p>';
+            output.innerHTML += '<p>✅ storage.js loaded</p>';
+            output.innerHTML += '<p>✅ game.js loaded</p>';
+            output.innerHTML += '<p>✅ ui.js loaded</p>';
+            
+            // Test Storage
+            const defaultState = Storage.getDefaultState();
+            output.innerHTML += '<p>✅ Storage.getDefaultState() OK</p>';
+            
+            // Test Game init
+            Game.init();
+            output.innerHTML += '<p>✅ Game.init() OK</p>';
+            output.innerHTML += '<p>✅ State: ' + JSON.stringify(Game.state, null, 2) + '</p>';
+            
+            output.innerHTML += '<h2 style="color:green;">✅ TODOS OS TESTES PASSARAM!</h2>';
+        } catch (error) {
+            output.innerHTML += '<h2 style="color:red;">❌ ERRO:</h2>';
+            output.innerHTML += '<pre style="color:red;">' + error.stack + '</pre>';
+        }
+    </script>
+</body>
+</html>

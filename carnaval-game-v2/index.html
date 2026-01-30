@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Carnaval Game - Coleção Lendária</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+            <h1 class="title-main">🎭 CARNAVAL GAME</h1>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Carregando a Sapucaí...</p>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="school-info">
+                    <h2 id="school-name">Minha Escola</h2>
+                    <div class="level-badge">
+                        <span class="level-icon">🏆</span>
+                        <span id="school-level">Nível 1</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="currency">
+                    <span class="currency-icon">⭐</span>
+                    <span id="estrelas-count">0</span>
+                </div>
+                <div class="currency premium">
+                    <span class="currency-icon">💎</span>
+                    <span id="gemas-count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- XP Bar -->
+        <div class="xp-container">
+            <div class="xp-bar">
+                <div class="xp-fill" id="xp-fill"></div>
+            </div>
+            <div class="xp-text">
+                <span id="xp-current">0</span> / <span id="xp-max">100</span> XP
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🎴</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="colecao-count">0/36</div>
+                    <div class="stat-label">Coleção</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="energia-count">10/10</div>
+                    <div class="stat-label">Energia</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="vitorias-count">0</div>
+                    <div class="stat-label">Vitórias</div>
+                </div>
+            </div>
+            <div class="stat-card" id="idle-income-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="idle-income">10/min</div>
+                    <div class="stat-label">Ganho Idle</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Actions -->
+        <div class="actions-grid">
+            <button class="action-btn primary" onclick="UI.abrirBaus()">
+                <div class="btn-icon">📦</div>
+                <div class="btn-content">
+                    <div class="btn-title">Abrir Baús</div>
+                    <div class="btn-subtitle">Colecione lendas!</div>
+                </div>
+            </button>
+
+            <button class="action-btn secondary" onclick="UI.verColecao()">
+                <div class="btn-icon">🎴</div>
+                <div class="btn-content">
+                    <div class="btn-title">Minha Coleção</div>
+                    <div class="btn-subtitle">Ver personagens</div>
+                </div>
+            </button>
+
+            <button class="action-btn success" onclick="Game.desfilar()">
+                <div class="btn-icon">🎭</div>
+                <div class="btn-content">
+                    <div class="btn-title">Desfilar</div>
+                    <div class="btn-subtitle">Ganhe recompensas</div>
+                </div>
+            </button>
+
+            <button class="action-btn warning" onclick="UI.abrirLoja()">
+                <div class="btn-icon">💎</div>
+                <div class="btn-content">
+                    <div class="btn-title">Loja</div>
+                    <div class="btn-subtitle">Comprar gemas</div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Daily Login Reward Banner -->
+        <div class="login-reward-banner" id="login-banner">
+            <div class="banner-icon">🎁</div>
+            <div class="banner-content">
+                <div class="banner-title">Recompensa Diária!</div>
+                <div class="banner-subtitle">Dia <span id="streak-days">1</span> de 7</div>
+            </div>
+            <button class="banner-btn" onclick="UI.coletarLoginReward()">Coletar</button>
+        </div>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="UI.irPara('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Início</span>
+            </button>
+            <button class="nav-btn" onclick="UI.verRankings()">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-label">Ranking</span>
+            </button>
+            <button class="nav-btn" onclick="UI.abrirConfig()">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Config</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Baús Screen -->
+    <div id="baus-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="UI.voltarHome()">← Voltar</button>
+            <h2>📦 Baús</h2>
+        </div>
+
+        <div class="baus-grid">
+            <!-- Baú Bronze -->
+            <div class="bau-card bronze">
+                <div class="bau-icon">📦</div>
+                <h3>Baú Bronze</h3>
+                <p class="bau-desc">1-3 personagens</p>
+                <p class="bau-cost">GRÁTIS!</p>
+                <p class="bau-cooldown" id="bronze-cooldown">Disponível</p>
+                <button class="bau-btn" onclick="Game.abrirBau('bronze')">Abrir</button>
+            </div>
+
+            <!-- Baú Prata -->
+            <div class="bau-card prata">
+                <div class="bau-icon">📦</div>
+                <h3>Baú Prata</h3>
+                <p class="bau-desc">3-5 personagens<br>1 raro garantido</p>
+                <p class="bau-cost">100 💎</p>
+                <button class="bau-btn" onclick="Game.abrirBau('prata')">Abrir</button>
+            </div>
+
+            <!-- Baú Ouro -->
+            <div class="bau-card ouro">
+                <div class="bau-icon">🎁</div>
+                <h3>Baú Ouro</h3>
+                <p class="bau-desc">5-8 personagens<br>1 épico garantido</p>
+                <p class="bau-cost">300 💎</p>
+                <button class="bau-btn" onclick="Game.abrirBau('ouro')">Abrir</button>
+            </div>
+
+            <!-- Baú Lendário -->
+            <div class="bau-card lendario">
+                <div class="bau-icon">💎</div>
+                <h3>Baú Lendário</h3>
+                <p class="bau-desc">10-15 personagens<br>1 LENDÁRIO garantido!</p>
+                <p class="bau-cost">1000 💎</p>
+                <button class="bau-btn" onclick="Game.abrirBau('lendario')">Abrir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coleção Screen -->
+    <div id="colecao-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="UI.voltarHome()">← Voltar</button>
+            <h2>🎴 Minha Coleção</h2>
+        </div>
+
+        <div class="colecao-filters">
+            <button class="filter-btn active" onclick="UI.filtrarColecao('todos')">Todos</button>
+            <button class="filter-btn" onclick="UI.filtrarColecao('ritmista')">🥁 Ritmistas</button>
+            <button class="filter-btn" onclick="UI.filtrarColecao('passista')">💃 Passistas</button>
+            <button class="filter-btn" onclick="UI.filtrarColecao('carnavalesco')">🎨 Carnavalescos</button>
+            <button class="filter-btn" onclick="UI.filtrarColecao('compositor')">🎤 Compositores</button>
+            <button class="filter-btn" onclick="UI.filtrarColecao('destaque')">⭐ Destaques</button>
+        </div>
+
+        <div class="colecao-grid" id="colecao-grid">
+            <!-- Personagens serão inseridos aqui via JS -->
+        </div>
+    </div>
+
+    <!-- Modal de Abertura de Baú -->
+    <div id="bau-modal" class="modal">
+        <div class="modal-content bau-opening">
+            <div class="bau-animation">
+                <div class="bau-icon-large" id="bau-opening-icon">📦</div>
+            </div>
+            <h2 id="bau-modal-title">Abrindo baú...</h2>
+            <div class="drops-container" id="drops-container">
+                <!-- Cards serão inseridos aqui -->
+            </div>
+            <button class="modal-btn" onclick="UI.fecharModal()">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Personagem -->
+    <div id="personagem-modal" class="modal">
+        <div class="modal-content personagem-details">
+            <button class="modal-close" onclick="UI.fecharModal()">×</button>
+            <div id="personagem-content">
+                <!-- Conteúdo do personagem -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="storage.js"></script>
+    <script src="ui.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
